@@ -40,7 +40,7 @@ namespace FileinfoTotals
                     return;
                 }
                 vols.Clear();
-                rtbOut.Text = "正在分析中...";
+                rtbOut.Text = "正在分析中..."+Environment.NewLine;
                 isInAnaly = true;
                 var selectedVols = new List<string>();
                 foreach (var item in lbVolumns.SelectedItems)
@@ -59,8 +59,8 @@ namespace FileinfoTotals
                         };
                         if (driveInfo.DriveType != DriveType.CDRom)
                         {
-                            volume.TotalSize = Math.Round(driveInfo.TotalSize / (1024 * 1024d), 3);
-                            volume.FreeSize = Math.Round(driveInfo.AvailableFreeSpace / (1024 * 1024d), 3);
+                            volume.TotalSize = Math.Round(driveInfo.TotalSize / (1024*1024 * 1024d), 3);
+                            volume.FreeSize = Math.Round(driveInfo.AvailableFreeSpace / (1024*1024 * 1024d), 3);
 
                             volume.FilesCount = GetFilesInfo(volume);
                         }
@@ -87,26 +87,53 @@ namespace FileinfoTotals
             {
                 strOut = string.Format("{0}磁盘名: {1,18}{2}",
                     strOut, vol.VolName, Environment.NewLine);
-                strOut = string.Format("{0}磁盘类型:{1,16}{2}",
+                strOut = string.Format("{0}磁盘类型:{1,19}{2}",
                     strOut, vol.volInfo.DriveType, Environment.NewLine);
                 strOut = string.Format("{0}磁盘总空间:{1,14} GB{2}",
                     strOut, vol.TotalSize, Environment.NewLine);
                 strOut = string.Format("{0}磁盘可用空间:{1,12} GB{2}",
                     strOut, vol.FreeSize, Environment.NewLine);
-                strOut = string.Format("{0}磁盘中文件总数:{1,12}{2}",
-                    strOut, vol.FilesCount, Environment.NewLine);
-                strOut = string.Format("{0}磁盘中目录总数:{1,12}{2}",
-                    strOut, vol.dirInfos==null?0: vol.dirInfos.Count, Environment.NewLine);
+                strOut = string.Format("{0}磁盘中文件总数:{1,13}{2}",
+                    strOut, vol.FilesCount.ToString("###,###"), Environment.NewLine);
+                strOut = string.Format("{0}磁盘中目录总数:{1,13}{2}{2}",
+                    strOut, vol.dirInfos==null?"0": vol.dirInfos.Count.ToString("###,###"),
+                    Environment.NewLine);
                 if (vol.fileInfos != null)
                 {
                     var filesByExtensions = vol.fileInfos.GroupBy(g => g.Extension)
-                        .Select(s => new { ExtenName = s.Key, FileCnt = s.Count() });
+                        .Select(s => new { ExtenName = s.Key, FileCnt = s.Count() })
+                        .OrderByDescending(o => o.FileCnt);
                     if (filesByExtensions != null)
                     {
                         foreach (var e in filesByExtensions)
                         {
-                            strOut = string.Format("{0}扩展名为{1}的文件总数:{2}{3}",
-                         strOut, e.ExtenName, e.FileCnt, Environment.NewLine);
+                            strOut = string.Format("{0}扩展名为 {1,-20}的文件总数:{2,6}{3}",
+                         strOut, e.ExtenName, e.FileCnt.ToString("###,###"), Environment.NewLine);
+                        }
+                    }
+                    var modifyByOneMonth = vol.fileInfos.Where(w => w.LastWriteTime > DateTime.Now.AddMonths(-1))
+                        .OrderByDescending(o => o.LastWriteTime);
+                    if (modifyByOneMonth != null && modifyByOneMonth.Count() > 0)
+                    {
+                        strOut = string.Format("{0}{2}最近1月内修改过的文件数:{1}{2}",
+                             strOut, modifyByOneMonth.Count(), Environment.NewLine);
+                        foreach (var m in modifyByOneMonth)
+                        {
+                            strOut = string.Format("{0} {1,-40} 修改时间:{2}{3}",
+                         strOut, m.FullName, m.LastWriteTime.ToString(), Environment.NewLine);
+                        }
+                    }
+                    //Over 1GB size files
+                    var overOneGBFiles = vol.fileInfos.Where(w => w.Length>1024*1024*1024)
+                        .OrderByDescending(o => o.Length);
+                    if (overOneGBFiles != null && overOneGBFiles.Count() > 0)
+                    {
+                        strOut = string.Format("{0}{2}大小超过1GB的文件数:{1}{2}",
+                             strOut, overOneGBFiles.Count(), Environment.NewLine);
+                        foreach (var m in overOneGBFiles)
+                        {
+                            strOut = string.Format("{0} {1,-40} 大小:{2,3}GB{3}",
+                         strOut, m.FullName, m.Length/(1024*1024*1024), Environment.NewLine);
                         }
                     }
                 }
@@ -121,6 +148,11 @@ namespace FileinfoTotals
         /// <returns></returns>
         private int GetFilesInfo(Volume vol)
         {
+            this.rtbOut.BeginInvoke(new Action(() =>
+            {
+                this.rtbOut.Text = string.Format("{0}正在分析磁盘名[{1}]中的所有文件及目录...{2}",
+this.rtbOut.Text, vol.VolName, Environment.NewLine);
+            }));
             int filesCnt = 0;
             var filesInfoList = new List<FileInfo>();
             var subDirInfo = new List<DirectoryInfo>();
@@ -139,6 +171,11 @@ namespace FileinfoTotals
                         Console.WriteLine(u.Message);
                     }
                 });
+            this.rtbOut.BeginInvoke(new Action(() =>
+            {
+                this.rtbOut.Text = string.Format("{0}分析磁盘名[{1}]中的目录完成{2}",
+this.rtbOut.Text, vol.VolName, Environment.NewLine);
+            }));
             if (subDirInfo != null&& subDirInfo.Count>0)
             {
                 vol.dirInfos = subDirInfo;
@@ -146,7 +183,7 @@ namespace FileinfoTotals
                 {
                     try
                     {
-                        filesInfoList.AddRange(dir.GetFiles("*", SearchOption.TopDirectoryOnly));
+                        filesInfoList.AddRange(dirInfo.GetFiles("*", SearchOption.TopDirectoryOnly));
                     }
                     catch (System.UnauthorizedAccessException u)
                     {
@@ -154,6 +191,11 @@ namespace FileinfoTotals
                     }
                 }
             }
+            this.rtbOut.BeginInvoke(new Action(() =>
+            {
+                this.rtbOut.Text = string.Format("{0}分析磁盘名[{1}]中的文件完成{2}",
+this.rtbOut.Text, vol.VolName, Environment.NewLine);
+            }));
             if (filesInfo != null)
             {
                 vol.fileInfos = filesInfoList;

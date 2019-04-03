@@ -37,7 +37,7 @@
             // 
             this.lbVolumns.FormattingEnabled = true;
             this.lbVolumns.ItemHeight = 12;
-            this.lbVolumns.Location = new System.Drawing.Point(116, 12);
+            this.lbVolumns.Location = new System.Drawing.Point(27, 12);
             this.lbVolumns.Name = "lbVolumns";
             this.lbVolumns.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lbVolumns.Size = new System.Drawing.Size(144, 124);
@@ -45,9 +45,9 @@
             // 
             // btnAnaly
             // 
-            this.btnAnaly.Location = new System.Drawing.Point(376, 58);
+            this.btnAnaly.Location = new System.Drawing.Point(297, 52);
             this.btnAnaly.Name = "btnAnaly";
-            this.btnAnaly.Size = new System.Drawing.Size(75, 23);
+            this.btnAnaly.Size = new System.Drawing.Size(129, 40);
             this.btnAnaly.TabIndex = 1;
             this.btnAnaly.Text = "分析";
             this.btnAnaly.UseVisualStyleBackColor = true;
@@ -55,10 +55,14 @@
             // 
             // rtbOut
             // 
-            this.rtbOut.Location = new System.Drawing.Point(116, 159);
+            this.rtbOut.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbOut.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.rtbOut.Location = new System.Drawing.Point(27, 142);
             this.rtbOut.Name = "rtbOut";
             this.rtbOut.ReadOnly = true;
-            this.rtbOut.Size = new System.Drawing.Size(355, 238);
+            this.rtbOut.Size = new System.Drawing.Size(502, 296);
             this.rtbOut.TabIndex = 2;
             this.rtbOut.Text = "";
             // 
@@ -66,7 +70,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(640, 450);
             this.Controls.Add(this.rtbOut);
             this.Controls.Add(this.btnAnaly);
             this.Controls.Add(this.lbVolumns);
