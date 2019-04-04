@@ -31,6 +31,7 @@
             this.lbVolumns = new System.Windows.Forms.ListBox();
             this.btnAnaly = new System.Windows.Forms.Button();
             this.rtbOut = new System.Windows.Forms.RichTextBox();
+            this.btnExport = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbVolumns
@@ -45,7 +46,7 @@
             // 
             // btnAnaly
             // 
-            this.btnAnaly.Location = new System.Drawing.Point(297, 52);
+            this.btnAnaly.Location = new System.Drawing.Point(211, 45);
             this.btnAnaly.Name = "btnAnaly";
             this.btnAnaly.Size = new System.Drawing.Size(129, 40);
             this.btnAnaly.TabIndex = 1;
@@ -66,11 +67,22 @@
             this.rtbOut.TabIndex = 2;
             this.rtbOut.Text = "";
             // 
+            // btnExport
+            // 
+            this.btnExport.Location = new System.Drawing.Point(400, 104);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(129, 32);
+            this.btnExport.TabIndex = 3;
+            this.btnExport.Text = "导出分析结果";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
             // FormFileinfoTotals
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(640, 450);
+            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.rtbOut);
             this.Controls.Add(this.btnAnaly);
             this.Controls.Add(this.lbVolumns);
@@ -87,6 +99,7 @@
         private System.Windows.Forms.ListBox lbVolumns;
         private System.Windows.Forms.Button btnAnaly;
         private System.Windows.Forms.RichTextBox rtbOut;
+        private System.Windows.Forms.Button btnExport;
     }
 }
 

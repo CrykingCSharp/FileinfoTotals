@@ -203,5 +203,16 @@ this.rtbOut.Text, vol.VolName, Environment.NewLine);
             }
             return filesCnt;
         }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            if (rtbOut.Text.Length>0)
+            {
+                File.WriteAllText(string.Format("{0}.ft",DateTime.Now.ToString("yyyyMMddHHmmss")),
+                    rtbOut.Text, Encoding.Default);
+                MessageBox.Show("导出完成!");
+                System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath);
+            }
+        }
     }
 }
